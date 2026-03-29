@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import type { Session, User } from '@supabase/supabase-js';
 import type { Profile } from '@/types';
 
@@ -9,22 +9,24 @@ export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const supabase = createClient();
+  const [loading, setLoading] = useState(isSupabaseConfigured);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) return;
+
+    const supabase = createClient();
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) fetchProfile(session.user.id);
+      if (session?.user) fetchProfile(session.user.id, supabase);
       else setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) fetchProfile(session.user.id);
+      if (session?.user) fetchProfile(session.user.id, supabase);
       else {
         setProfile(null);
         setLoading(false);
@@ -34,7 +36,7 @@ export function useAuth() {
     return () => subscription.unsubscribe();
   }, []);
 
-  async function fetchProfile(userId: string) {
+  async function fetchProfile(userId: string, supabase: ReturnType<typeof createClient>) {
     const { data } = await supabase
       .from('profiles')
       .select('*')
@@ -45,7 +47,8 @@ export function useAuth() {
   }
 
   async function signOut() {
-    await supabase.auth.signOut();
+    if (!isSupabaseConfigured) return;
+    createClient().auth.signOut();
   }
 
   return { session, user, profile, loading, signOut };
