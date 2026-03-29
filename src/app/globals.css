@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green: #c0db26;
+  --dark: #1a1a1a;
+  --dark2: #222;
+  --mid: #444;
+  --grey: #888;
+  --light: #f2f2f0;
+  --white: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  border-radius: 0 !important;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--dark);
+  color: var(--light);
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Raleway', sans-serif;
+}
+
+.overline {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--green);
+  color: var(--dark);
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 14px 28px;
+  cursor: pointer;
+  transition: opacity 0.2s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  opacity: 0.85;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--light);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 14px 28px;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-secondary:hover {
+  background: var(--green);
+  color: var(--dark);
+  border-color: var(--green);
+}
+
+.btn-full {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-full svg {
+  transition: transform 0.2s var(--ease);
+}
+
+.btn-full:hover svg {
+  transform: translateX(4px);
+}
+
+/* Form inputs */
+input, textarea, select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--light);
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  padding: 12px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s var(--ease);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--green);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--grey);
+}
+
+select option {
+  background: var(--dark2);
+  color: var(--light);
+}
+
+label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--grey);
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Cards */
+.card {
+  background: var(--dark2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-grid {
+  background: rgba(255, 255, 255, 0.06);
+  gap: 1px;
+}
+
+.card-grid > * {
+  background: var(--dark2);
+}
+
+/* Reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Sections */
+.section {
+  padding: 100px 48px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mid);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--grey);
+}
+
+/* Promotional banner */
+.promo-banner {
+  background: var(--green);
+  color: var(--dark);
+  text-align: center;
+  padding: 10px 24px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  z-index: 40;
+}
+
+/* Status badges */
+.badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  display: inline-block;
+}
+
+.badge-upcoming {
+  background: rgba(192, 219, 38, 0.15);
+  color: var(--green);
+}
+
+.badge-completed {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--grey);
+}
+
+.badge-cancelled {
+  background: rgba(255, 80, 80, 0.1);
+  color: #ff6b6b;
+}
+
+/* Toggle switch */
+.toggle-switch {
+  width: 44px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s var(--ease);
+}
+
+.toggle-switch.active {
+  background: var(--green);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: white;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.2s var(--ease);
+}
+
+.toggle-switch.active::after {
+  transform: translateX(20px);
+}
+
+/* Chart bars */
+.chart-bar {
+  background: var(--green);
+  opacity: 0.7;
+  transition: height 0.8s var(--ease);
+  min-height: 4px;
+}
+
+/* Dividers */
+.divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 0;
+}
+
+/* Image hover effect */
+.img-hover {
+  overflow: hidden;
+}
+
+.img-hover img {
+  transition: transform 0.7s var(--ease);
+}
+
+.img-hover:hover img {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 64px 24px;
+  }
+}
