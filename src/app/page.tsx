@@ -379,13 +379,13 @@ export default function HomePage() {
               gap: '16px',
             }}>
               <p>
-                Gusto House is a purpose-built workspace and community venue nestled in the village of Collingham, Nottinghamshire. Designed with both focus and flexibility in mind, it's a place where professionals, freelancers, and local organisations come together.
+                Gusto House is a purpose-built workspace and community venue nestled in the village of Collingham, Nottinghamshire. Designed with both focus and flexibility in mind, it&apos;s a place where professionals, freelancers, and local organisations come together.
               </p>
               <p>
                 From productive co-working sessions to full-day training events and studio hire, Gusto House provides the space and amenities you need — with the calm of the Nottinghamshire countryside right outside your window.
               </p>
               <p>
-                On-site you'll find The Allotment Deli & Kitchen café, a gym, and regular exercise classes — making it more than just a workspace.
+                On-site you&apos;ll find The Allotment Deli &amp; Kitchen café, a gym, and regular exercise classes — making it more than just a workspace.
               </p>
             </div>
           </div>
