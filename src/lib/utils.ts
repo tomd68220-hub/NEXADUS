@@ -45,6 +45,11 @@ export function cn(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
+export function calculateMeetingRoomTotal(hours: number): number {
+  if (hours <= 4) return hours * 15;
+  return 4 * 15 + (hours - 4) * 10;
+}
+
 export function daysUntilExpiry(purchasedAt: string, windowDays = 45): number {
   const purchased = new Date(purchasedAt);
   const expiry = new Date(purchased.getTime() + windowDays * 24 * 60 * 60 * 1000);

@@ -262,7 +262,7 @@ export default function StudioPage() {
       <section className="section" style={{ paddingTop: 0 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div className="reveal" style={{ marginBottom: '48px' }}>
-            <div className="overline" style={{ marginBottom: '16px' }}>What's Possible</div>
+            <div className="overline" style={{ marginBottom: '16px' }}>What&apos;s Possible</div>
             <h2 style={{ fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', fontWeight: 200, color: 'var(--white)' }}>
               A space for <strong style={{ fontWeight: 600 }}>every occasion</strong>
             </h2>

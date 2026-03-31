@@ -281,7 +281,7 @@ export default function CoworkPage() {
       <section className="section" style={{ background: 'var(--dark2)', paddingTop: '0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div className="reveal" style={{ marginBottom: '48px' }}>
-            <div className="overline" style={{ marginBottom: '16px' }}>What's Included</div>
+            <div className="overline" style={{ marginBottom: '16px' }}>What&apos;s Included</div>
             <h2 style={{
               fontSize: 'clamp(1.8rem,4vw,3rem)',
               fontWeight: 200,
@@ -289,7 +289,7 @@ export default function CoworkPage() {
               lineHeight: 1.2,
             }}>
               Everything you need,{' '}
-              <strong style={{ fontWeight: 600 }}>nothing you don't</strong>
+              <strong style={{ fontWeight: 600 }}>nothing you don&apos;t</strong>
             </h2>
           </div>
           <div style={{
