@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/hooks/useToast';
 import { ToastContainer } from '@/components/ui/Toast';
 import { Toggle } from '@/components/ui/Toggle';
@@ -15,7 +14,6 @@ const ROOMS = [
 
 export default function ResourcesPage() {
   const { toasts, addToast, removeToast } = useToast();
-  const supabase = createClient();
 
   const [roomStatus, setRoomStatus] = useState<Record<string, boolean>>({
     training_room: true, hot_desk: true, meeting_room: true, studio: true,

@@ -33,8 +33,6 @@ function getStrengthLabel(score: number): { label: string; color: string } {
 }
 
 export default function RegisterPage() {
-  const supabase = createClient();
-
   const [form, setForm] = useState<FormState>({
     firstName: '',
     lastName: '',
@@ -82,6 +80,7 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
+    const supabase = createClient();
 
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: form.email,
@@ -122,6 +121,7 @@ export default function RegisterPage() {
 
   async function handleOAuth(provider: 'google' | 'azure' | 'linkedin_oidc') {
     setError('');
+    const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirectTo: `${window.location.origin}/auth/callback` },

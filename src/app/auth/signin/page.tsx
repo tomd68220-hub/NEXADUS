@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
-export default function SignInPage() {
+function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || '/dashboard';
@@ -15,15 +15,12 @@ export default function SignInPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const supabase = createClient();
-
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
     setError('');
     setLoading(true);
-
+    const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-
     if (error) {
       setError(error.message);
       setLoading(false);
@@ -34,6 +31,7 @@ export default function SignInPage() {
 
   async function handleOAuth(provider: 'google' | 'azure' | 'linkedin_oidc') {
     setError('');
+    const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirectTo: `${window.location.origin}/auth/callback?redirect=${redirectTo}` },
@@ -242,5 +240,17 @@ export default function SignInPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', background: 'var(--dark)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ color: 'var(--grey)', fontSize: '0.78rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Loading...</span>
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   );
 }
