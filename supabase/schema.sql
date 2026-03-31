@@ -128,3 +128,24 @@ create policy "Users can view own passes" on pass_balances for select using (aut
 create policy "Users can view own bookings" on bookings for select using (auth.uid() = user_id);
 create policy "Users can insert bookings" on bookings for insert with check (auth.uid() = user_id);
 create policy "Users can view own invoices" on invoices for select using (auth.uid() = user_id);
+
+-- Staff can view all bookings
+create policy "Staff can view all bookings" on bookings for select using (
+  exists (select 1 from profiles where id = auth.uid() and role in ('internal', 'studio', 'admin'))
+);
+
+-- Staff can insert their own bookings
+create policy "Staff can insert own bookings" on bookings for insert with check (
+  auth.uid() = user_id and
+  exists (select 1 from profiles where id = auth.uid() and role in ('internal', 'studio', 'admin'))
+);
+
+-- Admins can update any booking
+create policy "Admins can update bookings" on bookings for update using (
+  exists (select 1 from profiles where id = auth.uid() and role = 'admin')
+);
+
+-- New columns for booking source tracking
+alter table bookings add column if not exists booking_source text default 'client'; -- 'client' | 'staff' | 'admin'
+alter table bookings add column if not exists booked_by uuid references profiles;   -- staff/admin user who created it
+alter table bookings add column if not exists internal_notes text;

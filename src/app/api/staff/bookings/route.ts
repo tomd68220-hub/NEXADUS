@@ -3,26 +3,31 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { generateReference } from '@/lib/stripe';
 
-async function isAdmin(supabase: ReturnType<typeof createRouteHandlerClient>) {
+async function getStaffUser(supabase: ReturnType<typeof createRouteHandlerClient>) {
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return false;
+  if (!user) return null;
   const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-  return data?.role === 'admin';
+  if (!data || !['internal', 'studio', 'admin'].includes(data.role)) return null;
+  return user;
 }
 
+// GET — all bookings (for calendar view)
 export async function GET(request: Request) {
   const supabase = createRouteHandlerClient({ cookies });
-  if (!(await isAdmin(supabase))) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const user = await getStaffUser(supabase);
+  if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { searchParams } = new URL(request.url);
-  const space = searchParams.get('space');
-  const status = searchParams.get('status');
+  const from = searchParams.get('from');
+  const to = searchParams.get('to');
 
-  let query = supabase.from('bookings').select('*, profiles(first_name, last_name, email)').order('booking_date', { ascending: false });
-  if (space) query = query.eq('space_type', space);
-  if (status) query = query.eq('status', status);
+  let query = supabase
+    .from('bookings')
+    .select('*, profiles(first_name, last_name, email)')
+    .order('booking_date', { ascending: true });
+
+  if (from) query = query.gte('booking_date', from);
+  if (to) query = query.lte('booking_date', to);
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -30,12 +35,11 @@ export async function GET(request: Request) {
   return NextResponse.json({ bookings: data });
 }
 
+// POST — create a staff booking (no payment required)
 export async function POST(request: Request) {
   const supabase = createRouteHandlerClient({ cookies });
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user || !(await isAdmin(supabase))) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const user = await getStaffUser(supabase);
+  if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await request.json();
   const reference = generateReference();
@@ -43,7 +47,7 @@ export async function POST(request: Request) {
   const { data, error } = await supabase.from('bookings').insert({
     user_id: user.id,
     booked_by: user.id,
-    booking_source: 'admin',
+    booking_source: 'staff',
     space_type: body.space_type,
     booking_date: body.booking_date,
     start_time: body.start_time,
@@ -61,23 +65,30 @@ export async function POST(request: Request) {
   }).select().single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
   return NextResponse.json({ booking: data });
 }
 
+// PATCH — staff can cancel their own bookings
 export async function PATCH(request: Request) {
   const supabase = createRouteHandlerClient({ cookies });
-  if (!(await isAdmin(supabase))) {
+  const user = await getStaffUser(supabase);
+  if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const { id, status } = await request.json();
+
+  // Staff can only cancel their own bookings (admins can do more via admin route)
+  const { data: booking } = await supabase
+    .from('bookings')
+    .select('user_id')
+    .eq('id', id)
+    .single();
+
+  if (!booking || booking.user_id !== user.id) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const body = await request.json();
-  const { id, status, internal_notes } = body;
-
-  const update: Record<string, string> = {};
-  if (status) update.status = status;
-  if (internal_notes !== undefined) update.internal_notes = internal_notes;
-
-  const { error } = await supabase.from('bookings').update(update).eq('id', id);
+  const { error } = await supabase.from('bookings').update({ status }).eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });

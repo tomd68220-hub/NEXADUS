@@ -2,7 +2,8 @@ export type UserRole = 'external' | 'internal' | 'studio' | 'admin';
 export type PassType = 'full_day' | 'half_day';
 export type SpaceType = 'training_room' | 'hot_desk' | 'meeting_room' | 'studio';
 export type SessionType = 'half_day_am' | 'half_day_pm' | 'full_day' | 'hourly';
-export type BookingStatus = 'upcoming' | 'completed' | 'cancelled';
+export type BookingStatus = 'upcoming' | 'confirmed' | 'completed' | 'cancelled';
+export type BookingSource = 'client' | 'staff' | 'admin';
 
 export interface Profile {
   id: string;
@@ -46,7 +47,12 @@ export interface Booking {
   stripe_payment_id?: string;
   invoice_url?: string;
   special_requirements?: string;
+  booking_source?: BookingSource;
+  booked_by?: string;
+  internal_notes?: string;
   created_at: string;
+  // Joined profile data (admin/staff queries)
+  profiles?: { first_name: string; last_name: string; email: string } | null;
 }
 
 export interface Invoice {
